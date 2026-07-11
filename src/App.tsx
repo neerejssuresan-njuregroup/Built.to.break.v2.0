@@ -56,6 +56,26 @@ export default function App() {
   const [selectedDistrict, setSelectedDistrict] = useState<string>("delhi_south");
   const [scanning, setScanning] = useState<boolean>(true);
   const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
+  const [showPreloader, setShowPreloader] = useState<boolean>(true);
+  const [preloaderTime, setPreloaderTime] = useState<number>(3);
+
+  // Preloader Countdown Effect
+  useEffect(() => {
+    if (!showPreloader) return;
+    const interval = setInterval(() => {
+      setPreloaderTime((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setTimeout(() => {
+            setShowPreloader(false);
+          }, 600); // brief delay to see 'LIVE' status
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [showPreloader]);
 
   // Critical Narrowing triggers during step 2 or 3 of our core analytical metrics
   const isCriticalNarrowingActive = activeStep === "2" || activeStep === "3";
@@ -125,6 +145,112 @@ export default function App() {
 
   return (
     <div className="bg-[#0A0A0A] text-zinc-100 min-h-screen font-sans antialiased selection:bg-[#EF4444]/30 selection:text-red-200" id="app-root-container">
+      {/* Immersive High-Tech Risk Assessment Preloader */}
+      <AnimatePresence>
+        {showPreloader && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className="fixed inset-0 z-[100] bg-[#070708] flex flex-col items-center justify-center font-mono select-none overflow-hidden"
+            id="preloader-overlay"
+          >
+            {/* High tech grid background with scanning lines */}
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(24,24,27,0.15)_1px,transparent_1px),linear-gradient(90deg,rgba(24,24,27,0.15)_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black pointer-events-none" />
+            
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.4 }}
+              className="relative text-center max-w-xl px-6 flex flex-col items-center z-10"
+            >
+              {/* Spinning alert diamond logo */}
+              <div className="mb-6 p-4 rounded-xl border border-red-950/40 bg-red-950/10 relative">
+                <div className="absolute -inset-1 rounded-xl bg-[#EF4444]/10 blur-sm animate-pulse" />
+                <Flame className="w-10 h-10 text-[#EF4444] relative animate-pulse" />
+              </div>
+
+              <h1 className="text-xs uppercase tracking-[0.4em] font-black text-zinc-100 mb-1">
+                STRUCTURAL_BREACH_CHECK
+              </h1>
+              <p className="text-[9px] text-zinc-500 max-w-md uppercase tracking-widest mb-8">
+                Delhi Metropolitan Fire Risk Vulnerability Audit
+              </p>
+
+              {/* Dynamic Circular Countdown Progress Timer */}
+              <div className="relative w-32 h-32 flex items-center justify-center border border-zinc-900 rounded-full mb-8 bg-black/40 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)]">
+                <svg className="absolute -rotate-90 w-full h-full p-2">
+                  <circle
+                    cx="56"
+                    cy="56"
+                    r="46"
+                    className="stroke-zinc-950 fill-none"
+                    strokeWidth="2"
+                  />
+                  <motion.circle
+                    cx="56"
+                    cy="56"
+                    r="46"
+                    className="stroke-[#EF4444] fill-none"
+                    strokeWidth="2"
+                    strokeDasharray="289"
+                    initial={{ strokeDashoffset: 0 }}
+                    animate={{ strokeDashoffset: 289 }}
+                    transition={{ duration: 3, ease: "linear" }}
+                  />
+                </svg>
+                <div className="text-center z-10">
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={preloaderTime}
+                      initial={{ opacity: 0, scale: 0.8, y: 2 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 1.2, y: -2 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-3xl font-black text-[#EF4444] block tracking-tighter"
+                    >
+                      {preloaderTime > 0 ? `0${preloaderTime}` : "LIVE"}
+                    </motion.span>
+                  </AnimatePresence>
+                  <span className="text-[8px] text-zinc-500 uppercase tracking-[0.2em] block mt-1">SYS_LOAD</span>
+                </div>
+              </div>
+
+              {/* Ticking log metrics representing realistic diagnostic sequences */}
+              <div className="w-64 text-left border border-zinc-900/60 bg-zinc-950/80 p-4 rounded text-[9px] text-zinc-400 space-y-1.5 font-mono shadow-inner">
+                <div className="flex justify-between items-center text-zinc-600 text-[8px]">
+                  <span>CONN: INGRESS_ROUTE</span>
+                  <span>SEQ: 982-A</span>
+                </div>
+                <div className="h-px bg-zinc-900" />
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="truncate">SECURED SPATIAL DATABASES</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={`w-1.5 h-1.5 rounded-full ${preloaderTime <= 2 ? 'bg-emerald-500' : 'bg-zinc-800 animate-pulse'}`} />
+                  <span className={preloaderTime <= 2 ? "text-zinc-300 truncate" : "text-zinc-600 truncate"}>MAPS GAP BREACH COORDINATES</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={`w-1.5 h-1.5 rounded-full ${preloaderTime <= 1 ? 'bg-emerald-500' : 'bg-zinc-800 animate-pulse'}`} />
+                  <span className={preloaderTime <= 1 ? "text-zinc-300 truncate" : "text-zinc-600 truncate"}>SIMULATION ASSETS READY</span>
+                </div>
+              </div>
+
+              {/* Direct Skip Button */}
+              <button
+                onClick={() => setShowPreloader(false)}
+                className="mt-6 text-[8px] uppercase text-zinc-500 hover:text-zinc-300 hover:border-zinc-700 tracking-widest border border-zinc-900 bg-black/20 px-3 py-1.5 rounded-md transition-all active:scale-95 duration-200"
+              >
+                SKIP_SYSTEM_TEST_MODE ➔
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Top Scroll Progress Indicator */}
       <div className="fixed top-0 left-0 right-0 h-[3px] bg-zinc-900 z-50" id="top-scroll-progress-bg">
         <div 
@@ -158,23 +284,18 @@ export default function App() {
                   setIsAudioPlaying(true);
                 }
               }}
-              className={`flex items-center gap-1.5 text-[10px] font-mono px-3 py-1 border transition-all duration-300 uppercase font-black tracking-wider ${
+              className={`flex items-center justify-center w-8 h-8 rounded-full border transition-all duration-300 ${
                 isAudioPlaying 
                   ? "bg-red-950/40 border-[#EF4444] text-[#EF4444] shadow-[0_0_15px_rgba(239,68,68,0.3)]" 
                   : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700"
               }`}
               id="audio-tension-toggle"
+              title={isAudioPlaying ? "Mute Tension Audio" : "Play Tension Audio"}
             >
               {isAudioPlaying ? (
-                <>
-                  <Volume2 className="w-3.5 h-3.5" />
-                  <span>[TENSION AUDIO ON]</span>
-                </>
+                <Volume2 className="w-4 h-4" />
               ) : (
-                <>
-                  <VolumeX className="w-3.5 h-3.5" />
-                  <span>[TENSION AUDIO OFF]</span>
-                </>
+                <VolumeX className="w-4 h-4" />
               )}
             </button>
           </div>
