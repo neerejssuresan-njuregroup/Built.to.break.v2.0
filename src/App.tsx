@@ -17,7 +17,6 @@ import {
   Smartphone, 
   Palette, 
   GitCompare,
-  ExternalLink,
   ChevronRight,
   Info,
   X,
@@ -178,14 +177,6 @@ export default function App() {
                 </>
               )}
             </button>
-            <a 
-              href="https://bits-group30.github.io/design-project/" 
-              target="_blank" 
-              rel="noreferrer"
-              className="text-xs text-zinc-400 hover:text-[#F97316] flex items-center gap-1 transition-colors"
-            >
-              ORIGINAL SITE <ExternalLink className="w-3 h-3" />
-            </a>
           </div>
         </div>
       </header>
@@ -209,7 +200,7 @@ export default function App() {
             transition={{ duration: 0.8 }}
             className="flex items-center gap-2 text-[11px] font-bold font-mono tracking-[0.3em] text-zinc-500 uppercase"
           >
-            <span>Design Audit / Group 30 / Scrollytelling</span>
+            <span>Design Audit / NJ / Scrollytelling</span>
           </motion.div>
 
           <motion.h1 
@@ -234,16 +225,16 @@ export default function App() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.5 }}
-            className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20 pointer-events-none"
+            className="flex flex-col items-center gap-2 pt-6 pointer-events-none"
           >
             <span className="text-[11px] uppercase tracking-[0.4em] font-black font-mono text-[#EF4444] drop-shadow-[0_0_10px_rgba(239,68,68,0.7)]">
               ↓ SCROLL TO DETECT BREACHES ↓
             </span>
-            <div className="w-1.5 h-12 rounded-full bg-red-950/40 border border-red-900/60 relative overflow-hidden flex justify-center">
+            <div className="w-1.5 h-10 rounded-full bg-red-950/40 border border-red-900/60 relative overflow-hidden flex justify-center">
               <motion.div 
-                animate={{ y: [0, 36, 0] }}
+                animate={{ y: [0, 24, 0] }}
                 transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
-                className="w-1.5 h-4 bg-[#EF4444] rounded-full shadow-[0_0_8px_#EF4444]"
+                className="w-1.5 h-3 bg-[#EF4444] rounded-full shadow-[0_0_8px_#EF4444]"
               />
             </div>
           </motion.div>
@@ -764,13 +755,8 @@ export default function App() {
           <div className="brand font-black italic text-2xl tracking-tighter text-zinc-100 animate-text-glitch">
             BUILT_TO_BREAK_v2.0
           </div>
-          <div className="flex gap-3">
-            <div className="status-tag border border-red-950/20 text-zinc-500 rounded-none text-[10px] uppercase font-mono tracking-[0.1em] px-3 py-1.5 font-bold">
-              Accessibility Passed
-            </div>
-            <div className="status-tag border border-red-950/20 text-zinc-500 rounded-none text-[10px] uppercase font-mono tracking-[0.1em] px-3 py-1.5 font-bold">
-              Performance Optimized
-            </div>
+          <div className="flex gap-3 text-zinc-600 font-mono text-[10px] uppercase tracking-widest font-black">
+            STORY SYSTEM DESIGNED BY NJ
           </div>
         </div>
       </footer>

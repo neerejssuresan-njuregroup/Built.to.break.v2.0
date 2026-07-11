@@ -16,6 +16,7 @@ import {
   Tooltip,
   Legend
 } from "recharts";
+import { ArrowUp, ArrowDown } from "lucide-react";
 import { EXPANSION_DATA, DEFICIT_DATA, CONGESTION_DATA, VULNERABILITY_DATA } from "../data";
 
 interface InteractiveChartsProps {
@@ -38,8 +39,25 @@ export default function InteractiveCharts({ activeStep }: InteractiveChartsProps
       case "1":
         return (
           <div className="w-full h-full flex flex-col justify-between" id="chart-viz-1">
-            <div className="flex justify-between items-center px-2 mb-2">
-              <span className="text-xs font-mono text-zinc-500 uppercase tracking-wider font-bold">Metric: Footprint Index (Base 100)</span>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-2 mb-4 border-b border-zinc-900 pb-3">
+              <div>
+                <span className="text-xs font-mono text-zinc-500 uppercase tracking-wider font-bold block">Metric: Footprint Index (Base 100)</span>
+                <span className="text-[10px] font-mono text-zinc-600 block mt-0.5">10-YEAR METROPOLITAN LAND SATURATION</span>
+              </div>
+              
+              {/* National Urban Average Trend Indicator */}
+              <div className="flex items-center gap-3 bg-red-950/20 border border-red-950/30 px-3 py-1.5 rounded-none self-start sm:self-auto">
+                <div className="flex items-center justify-center w-6 h-6 rounded-none bg-red-950/40 border border-red-500/30">
+                  <ArrowUp className="w-4 h-4 text-red-500" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[9px] font-mono text-zinc-400 font-bold uppercase">MIXED-USE VS URBAN AVG</span>
+                    <span className="text-xs font-mono font-black text-red-500">+104%</span>
+                  </div>
+                  <span className="text-[8px] font-mono text-zinc-500 uppercase block">Avg: 48.0 | Current Selection: 98.0</span>
+                </div>
+              </div>
             </div>
             <div className="w-full flex-grow h-[280px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -83,8 +101,25 @@ export default function InteractiveCharts({ activeStep }: InteractiveChartsProps
       case "2":
         return (
           <div className="w-full h-full flex flex-col justify-between" id="chart-viz-2">
-            <div className="flex justify-between items-center px-2 mb-2">
-              <span className="text-xs font-mono text-zinc-500 uppercase tracking-wider font-bold">Metric: Number of Building Floors</span>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-2 mb-4 border-b border-zinc-900 pb-3">
+              <div>
+                <span className="text-xs font-mono text-zinc-500 uppercase tracking-wider font-bold block">Metric: Number of Building Floors</span>
+                <span className="text-[10px] font-mono text-zinc-600 block mt-0.5">UNAUTHORIZED VERTICAL HEIGHT INDEX</span>
+              </div>
+              
+              {/* National Urban Average Trend Indicator */}
+              <div className="flex items-center gap-3 bg-red-950/20 border border-red-950/30 px-3 py-1.5 rounded-none self-start sm:self-auto">
+                <div className="flex items-center justify-center w-6 h-6 rounded-none bg-red-950/40 border border-red-500/30">
+                  <ArrowUp className="w-4 h-4 text-red-500" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[9px] font-mono text-zinc-400 font-bold uppercase">FLOORS VS URBAN AVG</span>
+                    <span className="text-xs font-mono font-black text-red-500">+77%</span>
+                  </div>
+                  <span className="text-[8px] font-mono text-zinc-500 uppercase block">Avg: 3.5 Floors | Selected Area Avg: 6.2</span>
+                </div>
+              </div>
             </div>
             <div className="w-full flex-grow h-[280px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -105,8 +140,25 @@ export default function InteractiveCharts({ activeStep }: InteractiveChartsProps
       case "3":
         return (
           <div className="w-full h-full flex flex-col justify-between" id="chart-viz-3">
-            <div className="flex justify-between items-center px-2 mb-2">
-              <span className="text-xs font-mono text-zinc-500 uppercase tracking-wider font-bold">Metric: Travel Time for 5km (Minutes)</span>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-2 mb-4 border-b border-zinc-900 pb-3">
+              <div>
+                <span className="text-xs font-mono text-zinc-500 uppercase tracking-wider font-bold block">Metric: Travel Time for 5km (Minutes)</span>
+                <span className="text-[10px] font-mono text-zinc-600 block mt-0.5">PEAK RESPONSE ROUTING DELAYS</span>
+              </div>
+              
+              {/* National Urban Average Trend Indicator */}
+              <div className="flex items-center gap-3 bg-orange-950/20 border border-orange-950/30 px-3 py-1.5 rounded-none self-start sm:self-auto">
+                <div className="flex items-center justify-center w-6 h-6 rounded-none bg-orange-950/40 border border-orange-500/30">
+                  <ArrowUp className="w-4 h-4 text-orange-500" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[9px] font-mono text-zinc-400 font-bold uppercase">COMMUTE DELAY VS URBAN AVG</span>
+                    <span className="text-xs font-mono font-black text-orange-500">+95%</span>
+                  </div>
+                  <span className="text-[8px] font-mono text-zinc-500 uppercase block">Avg: 16.5 Min | Selected Peak Avg: 32.2</span>
+                </div>
+              </div>
             </div>
             <div className="w-full flex-grow h-[280px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -127,8 +179,25 @@ export default function InteractiveCharts({ activeStep }: InteractiveChartsProps
       case "4":
         return (
           <div className="w-full h-full flex flex-col justify-between" id="chart-viz-4">
-            <div className="flex justify-between items-center px-2 mb-2">
-              <span className="text-xs font-mono text-zinc-500 uppercase tracking-wider font-bold">Metric: Vulnerability Score (Max 100)</span>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-2 mb-4 border-b border-zinc-900 pb-3">
+              <div>
+                <span className="text-xs font-mono text-zinc-500 uppercase tracking-wider font-bold block">Metric: Vulnerability Score (Max 100)</span>
+                <span className="text-[10px] font-mono text-zinc-600 block mt-0.5">METROPOLITAN COLLAPSE INDEX</span>
+              </div>
+              
+              {/* National Urban Average Trend Indicator */}
+              <div className="flex items-center gap-3 bg-red-950/20 border border-red-950/30 px-3 py-1.5 rounded-none self-start sm:self-auto">
+                <div className="flex items-center justify-center w-6 h-6 rounded-none bg-red-950/40 border border-red-500/30">
+                  <ArrowUp className="w-4 h-4 text-red-500" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[9px] font-mono text-zinc-400 font-bold uppercase">HAZARD INDEX VS URBAN AVG</span>
+                    <span className="text-xs font-mono font-black text-red-500">+58%</span>
+                  </div>
+                  <span className="text-[8px] font-mono text-zinc-500 uppercase block">Avg Score: 58.0 | Selected Cities Avg: 92.0</span>
+                </div>
+              </div>
             </div>
             <div className="w-full flex-grow h-[280px]">
               <ResponsiveContainer width="100%" height="100%">
