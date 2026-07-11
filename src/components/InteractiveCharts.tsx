@@ -88,7 +88,7 @@ export default function InteractiveCharts({ activeStep }: InteractiveChartsProps
                     name="Residential Areas"
                     type="monotone"
                     dataKey="residential"
-                    stroke="#3F3F46"
+                    stroke="#888888"
                     strokeWidth={2}
                     dot={{ r: 3 }}
                   />
@@ -129,7 +129,7 @@ export default function InteractiveCharts({ activeStep }: InteractiveChartsProps
                   <YAxis stroke="#555" fontSize={11} tickLine={false} axisLine={false} />
                   <Tooltip contentStyle={customTooltipStyle} />
                   <Legend iconType="square" wrapperStyle={{ fontSize: "10px", fontFamily: "monospace", paddingTop: "10px", textTransform: "uppercase" }} />
-                  <Bar name="Sanctioned Legal Floors" dataKey="legal" stackId="a" fill="#18181b" border="1px solid #333" />
+                  <Bar name="Sanctioned Legal Floors" dataKey="legal" stackId="a" fill="#3f3f46" stroke="#52525b" />
                   <Bar name="Unauthorized Illegal Floors" dataKey="illegal" stackId="a" fill="#EF4444" />
                 </BarChart>
               </ResponsiveContainer>
@@ -168,7 +168,7 @@ export default function InteractiveCharts({ activeStep }: InteractiveChartsProps
                   <YAxis stroke="#555" fontSize={11} tickLine={false} axisLine={false} />
                   <Tooltip contentStyle={customTooltipStyle} />
                   <Legend iconType="circle" wrapperStyle={{ fontSize: "10px", fontFamily: "monospace", paddingTop: "10px", textTransform: "uppercase" }} />
-                  <Bar name="Baseline Commute (Empty)" dataKey="baseline" fill="#18181b" />
+                  <Bar name="Baseline Commute (Empty)" dataKey="baseline" fill="#3f3f46" stroke="#52525b" />
                   <Bar name="Peak Congestion Delay" dataKey="peak" fill="#F97316" />
                 </BarChart>
               </ResponsiveContainer>
