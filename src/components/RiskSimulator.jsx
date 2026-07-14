@@ -5,17 +5,10 @@
 
 import React, { useState, useEffect } from "react";
 import { ShieldAlert, Flame, Compass, Users, MapPin, CheckCircle2 } from "lucide-react";
-import { SimulatorInputs, SimulatorOutputs } from "../types";
 import { calculateUrbanRisk } from "../data";
 import DelhiMap from "./DelhiMap";
 
-interface Preset {
-  name: string;
-  inputs: SimulatorInputs;
-  description: string;
-}
-
-const PRESETS: Preset[] = [
+const PRESETS = [
   {
     name: "Central Delhi (Daryaganj)",
     inputs: { laneWidth: 1.5, buildingFloors: 5, commercialOverload: 4.8, exitsCount: 1 },
@@ -54,16 +47,16 @@ export default function RiskSimulator() {
     { id: "delhi_east", name: "East Delhi", region: "NCT of Delhi", laneWidth: 3.0, buildingFloors: 5, commercialOverload: 3.2, exitsCount: 2, hazardScore: 76, hazardLevel: "High" },
   ]);
 
-  const [selectedAreaId, setSelectedAreaId] = useState<string>("delhi_central");
+  const [selectedAreaId, setSelectedAreaId] = useState("delhi_central");
 
-  const [inputs, setInputs] = useState<SimulatorInputs>({
+  const [inputs, setInputs] = useState({
     laneWidth: 1.5,
     buildingFloors: 5,
     commercialOverload: 4.8,
     exitsCount: 1
   });
 
-  const [outputs, setOutputs] = useState<SimulatorOutputs>({
+  const [outputs, setOutputs] = useState({
     evacuationVelocity: 12,
     tenderAccessMinutes: 18.0,
     hazardScore: 94,
@@ -73,7 +66,7 @@ export default function RiskSimulator() {
   });
 
   // Sync inputs when selecting a different area on the map
-  const selectArea = (id: string) => {
+  const selectArea = (id) => {
     setSelectedAreaId(id);
     const area = areas.find((a) => a.id === id);
     if (area) {
@@ -109,24 +102,24 @@ export default function RiskSimulator() {
     );
   }, [inputs, selectedAreaId]);
 
-  const handleInputChange = (key: keyof SimulatorInputs, value: number) => {
+  const handleInputChange = (key, value) => {
     setInputs((prev) => ({
       ...prev,
       [key]: value
     }));
   };
 
-  const applyPreset = (preset: Preset) => {
+  const applyPreset = (preset) => {
     setInputs(preset.inputs);
   };
 
-  const getBorderColorForHazard = (level: string) => {
+  const getBorderColorForHazard = (level) => {
     if (level === "Critical" || level === "Extreme") return "border-[#EF4444]";
     if (level === "High") return "border-[#F97316]";
     return "border-[#F59E0B]";
   };
 
-  const getTextColorForHazard = (level: string) => {
+  const getTextColorForHazard = (level) => {
     if (level === "Critical" || level === "Extreme") return "text-[#EF4444]";
     if (level === "High") return "text-[#F97316]";
     return "text-[#F59E0B]";

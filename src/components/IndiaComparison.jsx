@@ -6,18 +6,7 @@
 import React, { useState } from "react";
 import { ArrowRightLeft, ShieldAlert, Clock, ChevronRight, TrendingUp } from "lucide-react";
 
-interface CityComparisonData {
-  city: string;
-  state: string;
-  index: number; // Fire Vulnerability Index (0-100)
-  delay: number; // Avg Response Delay (minutes)
-  obstruction: number; // Narrow streets percentage
-  verticalViolations: number; // Avg vertical floors above permit
-  fireLoad: "Low" | "Moderate" | "High" | "Extreme";
-  annualIncidents: number; // Est. high density fires per year
-}
-
-const COMPARISON_DATA: CityComparisonData[] = [
+const COMPARISON_DATA = [
   {
     city: "Mumbai (Kalbadevi)",
     state: "Maharashtra",
@@ -81,19 +70,19 @@ const COMPARISON_DATA: CityComparisonData[] = [
 ];
 
 export default function IndiaComparison() {
-  const [activeCity1, setActiveCity1] = useState<string>("Delhi (Hauz Rani)");
-  const [activeCity2, setActiveCity2] = useState<string>("Mumbai (Kalbadevi)");
+  const [activeCity1, setActiveCity1] = useState("Delhi (Hauz Rani)");
+  const [activeCity2, setActiveCity2] = useState("Mumbai (Kalbadevi)");
 
   const city1 = COMPARISON_DATA.find((c) => c.city === activeCity1) || COMPARISON_DATA[1];
   const city2 = COMPARISON_DATA.find((c) => c.city === activeCity2) || COMPARISON_DATA[0];
 
-  const getFireColor = (score: number) => {
+  const getFireColor = (score) => {
     if (score >= 90) return "text-[#EF4444]";
     if (score >= 80) return "text-[#F97316]";
     return "text-[#F59E0B]";
   };
 
-  const getFireBg = (score: number) => {
+  const getFireBg = (score) => {
     if (score >= 90) return "bg-[#EF4444]";
     if (score >= 80) return "bg-[#F97316]";
     return "bg-[#F59E0B]";

@@ -33,12 +33,11 @@ import EmberOverlay from "./components/EmberOverlay";
 import { audioEngine } from "./lib/AudioEngine";
 
 import { 
-  VulnerabilityRecord, 
   INDIAN_STATES_AND_UTS, 
   ALL_INDIAN_STATES_LIST 
 } from "./indianStatesData";
 
-const ALL_INDIA_DATA: VulnerabilityRecord = {
+const ALL_INDIA_DATA = {
   name: "All India Urban Baseline Average",
   score: 68,
   hazardLevel: "HIGH VULNERABILITY BASELINE",
@@ -48,19 +47,19 @@ const ALL_INDIA_DATA: VulnerabilityRecord = {
 
 
 export default function App() {
-  const [activeStep, setActiveStep] = useState<string>("1");
-  const [scrollProgress, setScrollProgress] = useState<number>(0);
-  const [showLocationAlert, setShowLocationAlert] = useState<boolean>(true);
-  const [locationLevel, setLocationLevel] = useState<"all_india" | "state" | "district">("district");
-  const [selectedState, setSelectedState] = useState<string>("delhi");
-  const [selectedDistrict, setSelectedDistrict] = useState<string>("delhi_south");
-  const [scanning, setScanning] = useState<boolean>(true);
-  const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
-  const [showPreloader, setShowPreloader] = useState<boolean>(true);
-  const [preloaderTime, setPreloaderTime] = useState<number>(3);
+  const [activeStep, setActiveStep] = useState("1");
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [showLocationAlert, setShowLocationAlert] = useState(true);
+  const [locationLevel, setLocationLevel] = useState("district");
+  const [selectedState, setSelectedState] = useState("delhi");
+  const [selectedDistrict, setSelectedDistrict] = useState("delhi_south");
+  const [scanning, setScanning] = useState(true);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [showPreloader, setShowPreloader] = useState(true);
+  const [preloaderTime, setPreloaderTime] = useState(3);
 
   // Resolve active location record
-  let activeLocationRecord: VulnerabilityRecord;
+  let activeLocationRecord;
   if (locationLevel === "all_india") {
     activeLocationRecord = ALL_INDIA_DATA;
   } else if (locationLevel === "state") {
@@ -78,11 +77,11 @@ export default function App() {
   }
 
   const targetScore = scanning ? 0 : (activeLocationRecord?.score || 50);
-  const [animatedScore, setAnimatedScore] = useState<number>(0);
-  const [shimmerTrigger, setShimmerTrigger] = useState<number>(0);
+  const [animatedScore, setAnimatedScore] = useState(0);
+  const [shimmerTrigger, setShimmerTrigger] = useState(0);
 
-  const stableChartAreaRef = useRef<HTMLDivElement>(null);
-  const [stableChartDims, setStableChartDims] = useState<{ width: number; height: number } | null>(null);
+  const stableChartAreaRef = useRef(null);
+  const [stableChartDims, setStableChartDims] = useState(null);
 
   useEffect(() => {
     if (!stableChartAreaRef.current) return;
@@ -103,13 +102,13 @@ export default function App() {
   }, [locationLevel, selectedState, selectedDistrict]);
 
   useEffect(() => {
-    let startTimestamp: number | null = null;
+    let startTimestamp = null;
     const startScore = animatedScore;
     const duration = 600; // ms
 
-    let animationFrameId: number;
+    let animationFrameId;
 
-    const step = (timestamp: number) => {
+    const step = (timestamp) => {
       if (!startTimestamp) startTimestamp = timestamp;
       const progress = Math.min((timestamp - startTimestamp) / duration, 1);
       const easeProgress = 1 - Math.pow(1 - progress, 3);
@@ -729,7 +728,7 @@ export default function App() {
                       1. SELECT DIAGNOSTIC SCOPE
                     </span>
                     <div className="grid grid-cols-3 gap-1 bg-zinc-950 p-1 border border-zinc-900">
-                      {(["all_india", "state", "district"] as const).map((level) => (
+                      {["all_india", "state", "district"].map((level) => (
                         <button
                           key={level}
                           onClick={() => setLocationLevel(level)}

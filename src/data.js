@@ -3,17 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  StepContent,
-  ExpansionData,
-  DeficitData,
-  CongestionData,
-  VulnerabilityData,
-  SimulatorInputs,
-  SimulatorOutputs
-} from "./types";
-
-export const STEPS: StepContent[] = [
+export const STEPS = [
   {
     id: "1",
     icon: "📈",
@@ -48,7 +38,7 @@ export const STEPS: StepContent[] = [
   }
 ];
 
-export const EXPANSION_DATA: ExpansionData[] = [
+export const EXPANSION_DATA = [
   { year: 2016, residential: 45, commercial: 15, mixedUse: 20 },
   { year: 2018, residential: 48, commercial: 18, mixedUse: 25 },
   { year: 2020, residential: 50, commercial: 24, mixedUse: 35 },
@@ -57,7 +47,7 @@ export const EXPANSION_DATA: ExpansionData[] = [
   { year: 2026, residential: 55, commercial: 62, mixedUse: 98 }
 ];
 
-export const DEFICIT_DATA: DeficitData[] = [
+export const DEFICIT_DATA = [
   { location: "Hauz Rani Lane A", legal: 2, illegal: 4 },
   { location: "Hauz Rani Lane B", legal: 2, illegal: 3 },
   { location: "Khirki Extension", legal: 3, illegal: 4 },
@@ -65,7 +55,7 @@ export const DEFICIT_DATA: DeficitData[] = [
   { location: "Begumpur Village", legal: 2, illegal: 5 }
 ];
 
-export const CONGESTION_DATA: CongestionData[] = [
+export const CONGESTION_DATA = [
   { corridor: "Malviya Nagar Main Rd", baseline: 12, peak: 38 },
   { corridor: "Press Enclave Marg", baseline: 8, peak: 26 },
   { corridor: "LBS Marg", baseline: 15, peak: 42 },
@@ -73,7 +63,7 @@ export const CONGESTION_DATA: CongestionData[] = [
   { corridor: "Outer Ring Rd Jcn", baseline: 10, peak: 31 }
 ];
 
-export const VULNERABILITY_DATA: VulnerabilityData[] = [
+export const VULNERABILITY_DATA = [
   { city: "Mumbai (Kalbadevi)", index: 94, delayComponent: 42, densityComponent: 52 },
   { city: "Delhi (Hauz Rani)", index: 92, delayComponent: 48, densityComponent: 44 },
   { city: "Bengaluru (Chickpet)", index: 88, delayComponent: 44, densityComponent: 44 },
@@ -82,7 +72,7 @@ export const VULNERABILITY_DATA: VulnerabilityData[] = [
   { city: "Chennai (George Town)", index: 78, delayComponent: 36, densityComponent: 42 }
 ];
 
-export function calculateUrbanRisk(inputs: SimulatorInputs): SimulatorOutputs {
+export function calculateUrbanRisk(inputs) {
   const { laneWidth, buildingFloors, commercialOverload, exitsCount } = inputs;
 
   // Evacuation Velocity formula: depends positively on exits, positively on laneWidth, negatively on floors & overloading
@@ -116,7 +106,7 @@ export function calculateUrbanRisk(inputs: SimulatorInputs): SimulatorOutputs {
   const exitHazard = (1 - exitsCount / 4) * 15; // up to 15
   const hazardScore = Math.min(100, Math.max(5, Math.round(laneHazard + floorHazard + overloadHazard + exitHazard)));
 
-  let hazardLevel: "Low" | "Moderate" | "High" | "Critical" = "Low";
+  let hazardLevel = "Low";
   let hazardColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/20";
   let explanation = "";
 

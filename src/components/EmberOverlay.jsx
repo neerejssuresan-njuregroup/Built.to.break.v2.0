@@ -5,67 +5,10 @@
 
 import React, { useEffect, useRef } from "react";
 
-interface EmberOverlayProps {
-  active: boolean;
-}
-
-interface Particle {
-  x: number;
-  y: number;
-  size: number;
-  vx: number;
-  vy: number;
-  alpha: number;
-  maxAlpha: number;
-  decay: number;
-  color: string;
-  wobbleSpeed: number;
-  wobbleRange: number;
-  angle: number;
-}
-
-interface Debris {
-  id: number;
-  x: number;
-  y: number;
-  size: number;
-  vx: number;
-  vy: number;
-  rotation: number;
-  rotationSpeed: number;
-  type: 'brick' | 'beam' | 'shard' | 'concrete_slab' | 'glowing_chunk';
-  color: string;
-  onFire: boolean;
-  hasRebar?: boolean; // metal rods sticking out
-}
-
-interface FlameTrail {
-  x: number;
-  y: number;
-  size: number;
-  vx: number;
-  vy: number;
-  alpha: number;
-  color: string;
-  decay: number;
-}
-
-interface WaterParticle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  size: number;
-  alpha: number;
-  life: number;
-  maxLife: number;
-  isSteam: boolean;
-}
-
-export default function EmberOverlay({ active }: EmberOverlayProps) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const isPastMetricsRef = useRef<boolean>(false);
-  const lastScrollYRef = useRef<number>(0);
+export default function EmberOverlay({ active }) {
+  const canvasRef = useRef(null);
+  const isPastMetricsRef = useRef(false);
+  const lastScrollYRef = useRef(0);
 
   // Scroll listener to detect if we have reached the Core Analytical Metrics (scrollytelling) or beyond
   useEffect(() => {
@@ -101,18 +44,18 @@ export default function EmberOverlay({ active }: EmberOverlayProps) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let animationId: number;
-    let particles: Particle[] = [];
-    let fallingDebris: Debris[] = [];
-    let flameTrails: FlameTrail[] = [];
-    let waterParticles: WaterParticle[] = [];
+    let animationId;
+    let particles = [];
+    let fallingDebris = [];
+    let flameTrails = [];
+    let waterParticles = [];
     let nextDebrisId = 0;
 
     // Rescue Helicopter simulation state (runs twice past metrics, then done)
     const helicopter = {
       x: -180,
       y: 120,
-      state: 'fly-in' as 'fly-in' | 'hover-rescue' | 'fly-out' | 'done',
+      state: 'fly-in',
       cycleCount: 0,
       cableLen: 0,
       victimAttached: false,
@@ -136,7 +79,7 @@ export default function EmberOverlay({ active }: EmberOverlayProps) {
     resizeCanvas();
 
     // Floating sparks/embers generator
-    const createParticle = (spawnAtBottom = false): Particle => {
+    const createParticle = (spawnAtBottom = false) => {
       const size = Math.random() * 3.5 + 0.8;
       const x = Math.random() * canvas.width;
       const y = spawnAtBottom ? canvas.height + 20 : Math.random() * canvas.height;
@@ -160,7 +103,7 @@ export default function EmberOverlay({ active }: EmberOverlayProps) {
 
     // Realistic Falling building parts generator
     const spawnDebris = (forceIntensity = 0) => {
-      const types: Array<'brick' | 'beam' | 'shard' | 'concrete_slab' | 'glowing_chunk'> = [
+      const types = [
         'brick', 'beam', 'shard', 'concrete_slab', 'glowing_chunk'
       ];
       const type = types[Math.floor(Math.random() * types.length)];
@@ -204,8 +147,8 @@ export default function EmberOverlay({ active }: EmberOverlayProps) {
       });
     };
 
-    const handleRumble = (e: Event) => {
-      const customEvent = e as CustomEvent;
+    const handleRumble = (e) => {
+      const customEvent = e;
       const intensity = customEvent.detail?.intensity || 10;
       const count = Math.min(Math.floor(intensity / 15) + 1, 3);
       for (let i = 0; i < count; i++) {

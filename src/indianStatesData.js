@@ -2,25 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export interface VulnerabilityRecord {
-  name: string;
-  score: number;
-  hazardLevel: string;
-  color: string;
-  detail: string;
-}
-
-export interface StateData {
-  id: string;
-  name: string;
-  averageScore: number;
-  hazardLevel: string;
-  color: string;
-  detail: string;
-  districts: Record<string, VulnerabilityRecord>;
-}
-
-export const INDIAN_STATES_AND_UTS: Record<string, StateData> = {
+export const INDIAN_STATES_AND_UTS = {
   delhi: {
     id: "delhi",
     name: "NCT of Delhi",
@@ -685,7 +667,7 @@ REMAINING_STATES.forEach(st => {
   const level = st.score >= 80 ? "CRITICAL HAZARD" : st.score >= 55 ? "HIGH HAZARD" : "MODERATE HAZARD";
   const col = st.score >= 80 ? "#EF4444" : st.score >= 55 ? "#F97316" : "#F59E0B";
   
-  const distRecords: Record<string, VulnerabilityRecord> = {};
+  const distRecords = {};
   st.dists.forEach((dName, i) => {
     const dScore = Math.min(95, Math.max(20, st.score + (i === 0 ? 8 : -10)));
     const dLvl = dScore >= 80 ? "CRITICAL HAZARD" : dScore >= 55 ? "HIGH HAZARD" : dScore >= 35 ? "MODERATE HAZARD" : "LOW HAZARD";

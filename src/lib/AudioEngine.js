@@ -4,32 +4,30 @@
  */
 
 class AudioEngine {
-  private ctx: AudioContext | null = null;
-  private isPlaying: boolean = false;
-
-  // Nodes
-  private masterGain: GainNode | null = null;
-  private rumbleOsc: OscillatorNode | null = null;
-  private rumbleGain: GainNode | null = null;
-  private heartbeatOsc: OscillatorNode | null = null;
-  private heartbeatGain: GainNode | null = null;
-  private heartbeatInterval: any = null;
-
-  private sirenOsc: OscillatorNode | null = null;
-  private sirenGain: GainNode | null = null;
-  private sirenLFO: OscillatorNode | null = null;
-
-  private noiseNode: AudioWorkletNode | ScriptProcessorNode | null = null;
-  private noiseGain: GainNode | null = null;
-  private noiseInterval: any = null;
-
   constructor() {
-    // Audio context is lazy initialized on user interaction
+    this.ctx = null;
+    this.isPlaying = false;
+
+    // Nodes
+    this.masterGain = null;
+    this.rumbleOsc = null;
+    this.rumbleGain = null;
+    this.heartbeatOsc = null;
+    this.heartbeatGain = null;
+    this.heartbeatInterval = null;
+
+    this.sirenOsc = null;
+    this.sirenGain = null;
+    this.sirenLFO = null;
+
+    this.noiseNode = null;
+    this.noiseGain = null;
+    this.noiseInterval = null;
   }
 
-  public init() {
+  init() {
     if (this.ctx) return;
-    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (!AudioContextClass) {
       console.warn("Web Audio API not supported in this browser");
       return;
@@ -37,7 +35,7 @@ class AudioEngine {
     this.ctx = new AudioContextClass();
   }
 
-  public start() {
+  start() {
     this.init();
     if (!this.ctx || this.isPlaying) return;
 
@@ -150,7 +148,7 @@ class AudioEngine {
     this.startCrackling();
   }
 
-  private startCrackling() {
+  startCrackling() {
     if (!this.ctx || !this.masterGain) return;
 
     // We can simulate wood popping/crackling using small high frequency clicks with white noise
@@ -192,7 +190,7 @@ class AudioEngine {
     }, 45);
   }
 
-  public stop() {
+  stop() {
     if (!this.isPlaying) return;
     this.isPlaying = false;
 
@@ -212,7 +210,7 @@ class AudioEngine {
     }
   }
 
-  public setTensionLevel(level: number) {
+  setTensionLevel(level) {
     if (!this.isPlaying || !this.ctx) return;
     const time = this.ctx.currentTime;
 
@@ -228,7 +226,7 @@ class AudioEngine {
     }
   }
 
-  public getIsPlaying() {
+  getIsPlaying() {
     return this.isPlaying;
   }
 }

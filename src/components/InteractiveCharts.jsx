@@ -8,13 +8,7 @@ import * as d3 from "d3";
 import { ArrowUp } from "lucide-react";
 import { EXPANSION_DATA, DEFICIT_DATA, CONGESTION_DATA, VULNERABILITY_DATA } from "../data";
 
-interface InteractiveChartsProps {
-  activeStep: string;
-  stableWidth?: number;
-  stableHeight?: number;
-}
-
-const formatLabel = (label: string, width: number) => {
+const formatLabel = (label, width) => {
   if (width < 450) {
     return label
       .replace(" (Kalbadevi)", "")
@@ -44,12 +38,12 @@ const formatLabel = (label: string, width: number) => {
   }
 };
 
-export default function InteractiveCharts({ activeStep, stableWidth, stableHeight }: InteractiveChartsProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const chartWrapperRef = useRef<HTMLDivElement>(null);
-  const svgRef = useRef<SVGSVGElement>(null);
+export default function InteractiveCharts({ activeStep, stableWidth, stableHeight }) {
+  const containerRef = useRef(null);
+  const chartWrapperRef = useRef(null);
+  const svgRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 400, height: 200 });
-  const [hoveredData, setHoveredData] = useState<string | null>(null);
+  const [hoveredData, setHoveredData] = useState(null);
 
   // Monitor element resize to keep D3 graphics perfectly responsive
   useEffect(() => {
@@ -121,7 +115,7 @@ export default function InteractiveCharts({ activeStep, stableWidth, stableHeigh
       // --- EXPANSION LINE CHART (GROWTH DYNAMICS) ---
       const years = EXPANSION_DATA.map((d) => d.year);
       
-      const xScale = d3.scalePoint<number>()
+      const xScale = d3.scalePoint()
         .domain(years)
         .range([0, width]);
 
@@ -161,15 +155,15 @@ export default function InteractiveCharts({ activeStep, stableWidth, stableHeigh
         .call(g => g.selectAll(".tick line").attr("stroke", "#18181b").attr("stroke-dasharray", "3,3"));
 
       // Line Generators
-      const lineMixed = d3.line<typeof EXPANSION_DATA[0]>()
+      const lineMixed = d3.line()
         .x((d) => xScale(d.year) || 0)
         .y((d) => yScale(d.mixedUse));
 
-      const lineComm = d3.line<typeof EXPANSION_DATA[0]>()
+      const lineComm = d3.line()
         .x((d) => xScale(d.year) || 0)
         .y((d) => yScale(d.commercial));
 
-      const lineRes = d3.line<typeof EXPANSION_DATA[0]>()
+      const lineRes = d3.line()
         .x((d) => xScale(d.year) || 0)
         .y((d) => yScale(d.residential));
 
@@ -229,14 +223,14 @@ export default function InteractiveCharts({ activeStep, stableWidth, stableHeigh
           .enter()
           .append("circle")
           .attr("cx", (d) => xScale(d.year) || 0)
-          .attr("cy", (d) => yScale(d[s.key as keyof typeof d] as number))
+          .attr("cy", (d) => yScale(d[s.key]))
           .attr("r", 4)
           .attr("fill", s.color)
           .attr("stroke", "#09090b")
           .attr("stroke-width", 1)
           .style("cursor", "pointer")
           .on("mouseover", (event, d) => {
-            const val = d[s.key as keyof typeof d];
+            const val = d[s.key];
             tooltipDiv
               .style("opacity", 1)
               .html(`

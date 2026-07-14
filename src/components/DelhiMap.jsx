@@ -7,34 +7,18 @@ import React, { useState } from "react";
 import { motion } from "motion/react";
 import { Compass, Layers, Maximize2, ShieldAlert } from "lucide-react";
 
-interface DelhiMapProps {
-  areas: Array<{
-    id: string;
-    name: string;
-    region: string;
-    laneWidth: number;
-    buildingFloors: number;
-    commercialOverload: number;
-    exitsCount: number;
-    hazardScore: number;
-    hazardLevel: string;
-  }>;
-  selectedAreaId: string;
-  onSelectArea: (id: string) => void;
-}
-
-export default function DelhiMap({ areas, selectedAreaId, onSelectArea }: DelhiMapProps) {
-  const [viewMode, setViewMode] = useState<"2d" | "3d">("3d");
+export default function DelhiMap({ areas, selectedAreaId, onSelectArea }) {
+  const [viewMode, setViewMode] = useState("3d");
 
   // Helper to get color code based on requirements hazard score for fire-based theme
-  const getFireColor = (score: number) => {
+  const getFireColor = (score) => {
     if (score >= 80) return "#EF4444"; // Red (Critical)
     if (score >= 55) return "#F97316"; // Orange (High)
     if (score >= 30) return "#F59E0B"; // Amber (Moderate)
     return "#FACC15"; // Warm Yellow (Low)
   };
 
-  const getDistrictCode = (id: string) => {
+  const getDistrictCode = (id) => {
     switch (id) {
       case "delhi_north": return "DL-N";
       case "delhi_north_west": return "DL-NW";
@@ -251,7 +235,7 @@ export default function DelhiMap({ areas, selectedAreaId, onSelectArea }: DelhiM
   ];
 
   // Mathematically precise isometric 3D projection function
-  const project3D = (x: number, y: number, z: number = 0) => {
+  const project3D = (x, y, z = 0) => {
     const angle = Math.PI / 6; // 30 degrees tilt
     const cx = 200;
     const cy = 200;
