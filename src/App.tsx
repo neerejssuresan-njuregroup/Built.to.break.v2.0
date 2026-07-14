@@ -81,6 +81,23 @@ export default function App() {
   const [animatedScore, setAnimatedScore] = useState<number>(0);
   const [shimmerTrigger, setShimmerTrigger] = useState<number>(0);
 
+  const stableChartAreaRef = useRef<HTMLDivElement>(null);
+  const [stableChartDims, setStableChartDims] = useState<{ width: number; height: number } | null>(null);
+
+  useEffect(() => {
+    if (!stableChartAreaRef.current) return;
+    const observer = new ResizeObserver((entries) => {
+      if (!entries || entries.length === 0) return;
+      const { width, height } = entries[0].contentRect;
+      setStableChartDims({
+        width: Math.max(280, width),
+        height: Math.max(260, height || 320)
+      });
+    });
+    observer.observe(stableChartAreaRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     setShimmerTrigger(prev => prev + 1);
   }, [locationLevel, selectedState, selectedDistrict]);
@@ -566,7 +583,7 @@ export default function App() {
             </div>
 
             {/* Right Column: Sticky Chart Panel (Only visible on Desktop lg+) with unexpected slides and shifts on step changes */}
-            <div className="hidden lg:block w-full lg:w-1/2 lg:sticky lg:top-[12vh] lg:h-[70vh] bg-black border border-red-950/30 rounded-none p-6 shadow-2xl self-start mt-8 lg:mt-0 overflow-hidden">
+            <div className="hidden lg:block w-full lg:w-1/2 lg:sticky lg:top-[10vh] lg:h-[82vh] lg:min-h-[640px] lg:max-h-[800px] bg-black border border-red-950/30 rounded-none p-6 shadow-2xl self-start mt-8 lg:mt-0 overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-b from-red-950/5 to-transparent pointer-events-none z-10" />
               
               {/* Background video inside the sticky chart panel */}
@@ -597,7 +614,7 @@ export default function App() {
                 </div>
 
                 {/* Main chart rendering area - Shifts and skews randomly on update representing maze transitions */}
-                <div className="flex-grow w-full relative overflow-hidden flex items-center justify-center">
+                <div ref={stableChartAreaRef} className="flex-grow w-full relative overflow-hidden flex items-center justify-center">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={activeStep}
@@ -619,7 +636,11 @@ export default function App() {
                       transition={{ type: "spring", stiffness: 95, damping: 13 }}
                       className="absolute inset-0"
                     >
-                      <InteractiveCharts activeStep={activeStep} />
+                      <InteractiveCharts 
+                        activeStep={activeStep} 
+                        stableWidth={stableChartDims?.width} 
+                        stableHeight={stableChartDims?.height} 
+                      />
                     </motion.div>
                   </AnimatePresence>
                 </div>

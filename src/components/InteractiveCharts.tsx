@@ -10,6 +10,8 @@ import { EXPANSION_DATA, DEFICIT_DATA, CONGESTION_DATA, VULNERABILITY_DATA } fro
 
 interface InteractiveChartsProps {
   activeStep: string;
+  stableWidth?: number;
+  stableHeight?: number;
 }
 
 const formatLabel = (label: string, width: number) => {
@@ -42,29 +44,36 @@ const formatLabel = (label: string, width: number) => {
   }
 };
 
-export default function InteractiveCharts({ activeStep }: InteractiveChartsProps) {
+export default function InteractiveCharts({ activeStep, stableWidth, stableHeight }: InteractiveChartsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const chartWrapperRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
-  const [dimensions, setDimensions] = useState({ width: 400, height: 260 });
+  const [dimensions, setDimensions] = useState({ width: 400, height: 200 });
   const [hoveredData, setHoveredData] = useState<string | null>(null);
 
   // Monitor element resize to keep D3 graphics perfectly responsive
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (stableWidth && stableHeight) {
+      setDimensions({
+        width: stableWidth,
+        height: Math.max(220, stableHeight - 120),
+      });
+      return;
+    }
+    if (!chartWrapperRef.current) return;
 
     const resizeObserver = new ResizeObserver((entries) => {
       if (!entries || entries.length === 0) return;
-      const { width } = entries[0].contentRect;
-      // Subtract margins/paddings if needed
+      const { width, height } = entries[0].contentRect;
       setDimensions({
-        width: Math.max(280, width),
-        height: 240,
+        width: Math.max(260, width),
+        height: Math.max(160, height || 200),
       });
     });
 
-    resizeObserver.observe(containerRef.current);
+    resizeObserver.observe(chartWrapperRef.current);
     return () => resizeObserver.disconnect();
-  }, []);
+  }, [stableWidth, stableHeight]);
 
   // D3 Render Effect
   useEffect(() => {
@@ -74,8 +83,8 @@ export default function InteractiveCharts({ activeStep }: InteractiveChartsProps
     const margin = {
       top: 15,
       right: isMobile ? 15 : 20,
-      bottom: activeStep === "2" || activeStep === "3" ? (isMobile ? 50 : 40) : (isMobile ? 30 : 35),
-      left: activeStep === "4" ? (isMobile ? 55 : 65) : (isMobile ? 30 : 35)
+      bottom: activeStep === "2" || activeStep === "3" ? (isMobile ? 65 : 55) : (isMobile ? 40 : 40),
+      left: activeStep === "4" ? (isMobile ? 65 : 75) : (isMobile ? 40 : 45)
     };
     const width = dimensions.width - margin.left - margin.right;
     const height = dimensions.height - margin.top - margin.bottom;
@@ -185,6 +194,27 @@ export default function InteractiveCharts({ activeStep }: InteractiveChartsProps
         .attr("stroke", "#71717a")
         .attr("stroke-width", 2)
         .attr("d", lineRes);
+
+      // Draw Average Benchmark Guideline Indicator
+      chartGroup.append("line")
+        .attr("x1", 0)
+        .attr("x2", width)
+        .attr("y1", yScale(48))
+        .attr("y2", yScale(48))
+        .attr("stroke", "#EF4444")
+        .attr("stroke-width", 1.5)
+        .attr("stroke-dasharray", "4,4")
+        .attr("opacity", 0.7);
+
+      chartGroup.append("text")
+        .attr("x", width - 5)
+        .attr("y", yScale(48) - 5)
+        .attr("text-anchor", "end")
+        .attr("fill", "#EF4444")
+        .attr("font-family", "JetBrains Mono, monospace")
+        .attr("font-size", "8px")
+        .attr("font-weight", "bold")
+        .text("AVG: 48.0");
 
       // Interactive circles
       const series = [
@@ -344,6 +374,27 @@ export default function InteractiveCharts({ activeStep }: InteractiveChartsProps
           });
       });
 
+      // Draw Average Benchmark Guideline Indicator
+      chartGroup.append("line")
+        .attr("x1", 0)
+        .attr("x2", width)
+        .attr("y1", yScale(3.5))
+        .attr("y2", yScale(3.5))
+        .attr("stroke", "#EF4444")
+        .attr("stroke-width", 1.5)
+        .attr("stroke-dasharray", "4,4")
+        .attr("opacity", 0.7);
+
+      chartGroup.append("text")
+        .attr("x", width - 5)
+        .attr("y", yScale(3.5) - 5)
+        .attr("text-anchor", "end")
+        .attr("fill", "#EF4444")
+        .attr("font-family", "JetBrains Mono, monospace")
+        .attr("font-size", "8px")
+        .attr("font-weight", "bold")
+        .text("URBAN AVG: 3.5 FLOORS");
+
     } else if (activeStep === "3") {
       // --- CONGESTION GROUPED BAR CHART (TRANSIT DELAYS) ---
       const corridors = CONGESTION_DATA.map((d) => d.corridor);
@@ -460,6 +511,27 @@ export default function InteractiveCharts({ activeStep }: InteractiveChartsProps
           });
       });
 
+      // Draw Average Benchmark Guideline Indicator
+      chartGroup.append("line")
+        .attr("x1", 0)
+        .attr("x2", width)
+        .attr("y1", yScale(16.5))
+        .attr("y2", yScale(16.5))
+        .attr("stroke", "#EF4444")
+        .attr("stroke-width", 1.5)
+        .attr("stroke-dasharray", "4,4")
+        .attr("opacity", 0.7);
+
+      chartGroup.append("text")
+        .attr("x", width - 5)
+        .attr("y", yScale(16.5) - 5)
+        .attr("text-anchor", "end")
+        .attr("fill", "#EF4444")
+        .attr("font-family", "JetBrains Mono, monospace")
+        .attr("font-size", "8px")
+        .attr("font-weight", "bold")
+        .text("AVG: 16.5 MIN");
+
     } else if (activeStep === "4") {
       // --- VULNERABILITY HORIZONTAL STACKED BAR CHART ---
       const cities = VULNERABILITY_DATA.map((d) => d.city);
@@ -571,6 +643,27 @@ export default function InteractiveCharts({ activeStep }: InteractiveChartsProps
             tooltipDiv.style("opacity", 0);
           });
       });
+
+      // Draw Average Benchmark Guideline Indicator (Vertical since this is a horizontal bar chart)
+      chartGroup.append("line")
+        .attr("x1", xScale(58))
+        .attr("x2", xScale(58))
+        .attr("y1", 0)
+        .attr("y2", height)
+        .attr("stroke", "#EF4444")
+        .attr("stroke-width", 1.5)
+        .attr("stroke-dasharray", "4,4")
+        .attr("opacity", 0.7);
+
+      chartGroup.append("text")
+        .attr("x", xScale(58) + 5)
+        .attr("y", 12)
+        .attr("text-anchor", "start")
+        .attr("fill", "#EF4444")
+        .attr("font-family", "JetBrains Mono, monospace")
+        .attr("font-size", "8px")
+        .attr("font-weight", "bold")
+        .text("AVG: 58");
     }
 
   }, [activeStep, dimensions]);
@@ -730,10 +823,10 @@ export default function InteractiveCharts({ activeStep }: InteractiveChartsProps
   };
 
   return (
-    <div className="w-full h-full flex flex-col bg-zinc-950/20 rounded-none p-4 border border-zinc-900" id="chart-container-panel" ref={containerRef}>
+    <div className="w-full h-full flex flex-col rounded-none" id="chart-container-panel" ref={containerRef}>
       {renderHeader()}
-      <div className="w-full flex-grow relative" style={{ minHeight: "240px" }}>
-        <svg ref={svgRef} className="w-full h-full overflow-visible" />
+      <div className="w-full flex-grow relative min-h-[220px]" ref={chartWrapperRef}>
+        <svg ref={svgRef} className="absolute inset-0 w-full h-full overflow-visible" />
       </div>
       {renderLegend()}
     </div>
