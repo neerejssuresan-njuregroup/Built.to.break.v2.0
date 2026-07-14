@@ -179,7 +179,7 @@ export default function RiskSimulator() {
             <span className="text-zinc-500 font-mono text-[10px] uppercase tracking-wider block mb-3 font-bold">
               [Preset Models]
             </span>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {PRESETS.map((preset) => {
                 const isSelected =
                   inputs.laneWidth === preset.inputs.laneWidth &&

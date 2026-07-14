@@ -59,6 +59,59 @@ export default function App() {
   const [showPreloader, setShowPreloader] = useState<boolean>(true);
   const [preloaderTime, setPreloaderTime] = useState<number>(3);
 
+  // Resolve active location record
+  let activeLocationRecord: VulnerabilityRecord;
+  if (locationLevel === "all_india") {
+    activeLocationRecord = ALL_INDIA_DATA;
+  } else if (locationLevel === "state") {
+    const stateRecord = INDIAN_STATES_AND_UTS[selectedState];
+    activeLocationRecord = {
+      name: stateRecord?.name || selectedState,
+      score: stateRecord?.averageScore || 50,
+      hazardLevel: stateRecord?.hazardLevel || "HIGH VULNERABILITY",
+      color: stateRecord?.color || "#EF4444",
+      detail: stateRecord?.detail || ""
+    };
+  } else {
+    const districts = INDIAN_STATES_AND_UTS[selectedState]?.districts || {};
+    activeLocationRecord = districts[selectedDistrict] || Object.values(districts)[0] || ALL_INDIA_DATA;
+  }
+
+  const targetScore = scanning ? 0 : (activeLocationRecord?.score || 50);
+  const [animatedScore, setAnimatedScore] = useState<number>(0);
+  const [shimmerTrigger, setShimmerTrigger] = useState<number>(0);
+
+  useEffect(() => {
+    setShimmerTrigger(prev => prev + 1);
+  }, [locationLevel, selectedState, selectedDistrict]);
+
+  useEffect(() => {
+    let startTimestamp: number | null = null;
+    const startScore = animatedScore;
+    const duration = 600; // ms
+
+    let animationFrameId: number;
+
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      const currentScore = Math.round(startScore + (targetScore - startScore) * easeProgress);
+      
+      setAnimatedScore(currentScore);
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(step);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(step);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [targetScore]);
+
   // Preloader Countdown Effect
   useEffect(() => {
     if (!showPreloader) return;
@@ -321,7 +374,7 @@ export default function App() {
             transition={{ duration: 0.8 }}
             className="flex items-center gap-2 text-[11px] font-bold font-mono tracking-[0.3em] text-zinc-500 uppercase"
           >
-            <span>Design Audit / NJ / Scrollytelling</span>
+            <span>Design Audit / Scrollytelling</span>
           </motion.div>
 
           <motion.h1 
@@ -457,17 +510,17 @@ export default function App() {
 
           <div className="lg:flex lg:gap-12 relative">
             {/* Left Column: Narrative Cards (Observer-monitored with maze-like random rotation & offsets) */}
-            <div className="w-full lg:w-1/2 space-y-[70vh] mb-[40vh] relative z-10">
+            <div className="w-full lg:w-1/2 space-y-16 lg:space-y-[75vh] mb-[20vh] lg:mb-[40vh] relative z-10">
               {STEPS.map((step) => {
                 const isActive = step.id === activeStep;
                 
                 // Maze-like dynamic calculation based on card index to trigger unexpected offsets & rotate skews
                 const stepIdx = parseInt(step.id);
                 const isEven = stepIdx % 2 === 0;
-                const skewOffset = isEven ? -4 : 4;
-                const rotateOffset = isEven ? -2 : 2;
-                const xOffset = isEven ? -25 : 25;
-                const yOffset = isEven ? 10 : -10;
+                const skewOffset = isEven ? -2 : 2;
+                const rotateOffset = isEven ? -1 : 1;
+                const xOffset = isEven ? -10 : 10;
+                const yOffset = isEven ? 6 : -6;
 
                 return (
                   <motion.div 
@@ -645,26 +698,8 @@ export default function App() {
                 </span>
               </div>
             </div>
-          ) : (() => {
-            let activeLocationRecord: VulnerabilityRecord;
-            if (locationLevel === "all_india") {
-              activeLocationRecord = ALL_INDIA_DATA;
-            } else if (locationLevel === "state") {
-              const stateRecord = INDIAN_STATES_AND_UTS[selectedState];
-              activeLocationRecord = {
-                name: stateRecord?.name || selectedState,
-                score: stateRecord?.averageScore || 50,
-                hazardLevel: stateRecord?.hazardLevel || "HIGH VULNERABILITY",
-                color: stateRecord?.color || "#EF4444",
-                detail: stateRecord?.detail || ""
-              };
-            } else {
-              const districts = INDIAN_STATES_AND_UTS[selectedState]?.districts || {};
-              activeLocationRecord = districts[selectedDistrict] || Object.values(districts)[0] || ALL_INDIA_DATA;
-            }
-
-            return (
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-8" id="resolved-hud">
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8" id="resolved-hud">
                 {/* Configuration controls */}
                 <div className="md:col-span-5 space-y-6">
                   {/* Scope Selector */}
@@ -684,7 +719,7 @@ export default function App() {
                           }`}
                           type="button"
                         >
-                          {level === "district" ? "Major cities" : level.replace("_", " ")}
+                          {level === "all_india" ? "India" : level === "state" ? "State" : "City"}
                         </button>
                       ))}
                     </div>
@@ -753,7 +788,36 @@ export default function App() {
                 </div>
 
                 {/* Analytical output diagnostic display */}
-                <div className="md:col-span-7 bg-zinc-950/50 border border-zinc-900 p-6 flex flex-col justify-between space-y-6">
+                <motion.div 
+                  key={shimmerTrigger}
+                  initial={{ 
+                    boxShadow: "0 0 0px rgba(0, 0, 0, 0)",
+                    borderColor: "#18181b" 
+                  }}
+                  animate={{ 
+                    boxShadow: [
+                      "0 0 0px rgba(0, 0, 0, 0)",
+                      `0 0 25px ${(activeLocationRecord?.color || "#EF4444")}35`,
+                      "0 0 0px rgba(0, 0, 0, 0)"
+                    ],
+                    borderColor: [
+                      "#18181b",
+                      activeLocationRecord?.color || "#EF4444",
+                      "#18181b"
+                    ]
+                  }}
+                  transition={{ duration: 1.0, ease: "easeOut" }}
+                  className="md:col-span-7 bg-zinc-950/50 border p-6 flex flex-col justify-between space-y-6 relative overflow-hidden"
+                >
+                  {/* Subtle Shimmer Overlay Sweep */}
+                  <motion.div
+                    initial={{ left: "-100%" }}
+                    animate={{ left: "100%" }}
+                    transition={{ duration: 0.9, ease: "easeInOut" }}
+                    className="absolute top-0 bottom-0 w-2/3 pointer-events-none bg-gradient-to-r from-transparent via-white/5 to-transparent z-10"
+                    style={{ mixBlendMode: "overlay" }}
+                  />
+
                   <div>
                     <div className="flex justify-between items-start">
                       <div>
@@ -765,7 +829,7 @@ export default function App() {
                       <div className="text-right">
                         <span className="text-[9px] font-mono text-zinc-500 uppercase block font-bold">INDEX VALUE</span>
                         <span className="text-3xl font-black font-mono tracking-tighter" style={{ color: activeLocationRecord?.color || "#EF4444" }}>
-                          {activeLocationRecord?.score || 50}/100
+                          {animatedScore}/100
                         </span>
                       </div>
                     </div>
@@ -774,7 +838,7 @@ export default function App() {
                     <div className="w-full h-2.5 bg-zinc-900 border border-zinc-800 rounded-none overflow-hidden mt-4">
                       <motion.div 
                         initial={{ width: 0 }}
-                        animate={{ width: `${activeLocationRecord?.score || 50}%` }}
+                        animate={{ width: `${animatedScore}%` }}
                         transition={{ type: "spring", stiffness: 80 }}
                         className="h-full bg-gradient-to-r"
                         style={{ 
@@ -796,10 +860,9 @@ export default function App() {
                     <span>SECTOR STATUS: UNREGULATED DECAY ACTIVE</span>
                     <span>CALIBRATED: 2026</span>
                   </div>
-                </div>
+                </motion.div>
               </div>
-            );
-          })()}
+          )}
         </div>
       </section>
 
@@ -877,7 +940,7 @@ export default function App() {
             BUILT_TO_BREAK_v2.0
           </div>
           <div className="flex gap-3 text-zinc-600 font-mono text-[10px] uppercase tracking-widest font-black">
-            STORY SYSTEM DESIGNED BY NJ
+            STORY SYSTEM DESIGNED BY SYSTEMS AUDIT
           </div>
         </div>
       </footer>

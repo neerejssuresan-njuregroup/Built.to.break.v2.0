@@ -26,12 +26,29 @@ interface DelhiMapProps {
 export default function DelhiMap({ areas, selectedAreaId, onSelectArea }: DelhiMapProps) {
   const [viewMode, setViewMode] = useState<"2d" | "3d">("3d");
 
-  // Helper to get color code based on hazard score for fire-based theme
+  // Helper to get color code based on requirements hazard score for fire-based theme
   const getFireColor = (score: number) => {
     if (score >= 80) return "#EF4444"; // Red (Critical)
     if (score >= 55) return "#F97316"; // Orange (High)
     if (score >= 30) return "#F59E0B"; // Amber (Moderate)
     return "#FACC15"; // Warm Yellow (Low)
+  };
+
+  const getDistrictCode = (id: string) => {
+    switch (id) {
+      case "delhi_north": return "DL-N";
+      case "delhi_north_west": return "DL-NW";
+      case "delhi_west": return "DL-W";
+      case "delhi_south_west": return "DL-SW";
+      case "delhi_south": return "DL-S";
+      case "delhi_south_east": return "DL-SE";
+      case "delhi_new": return "DL-ND";
+      case "delhi_central": return "DL-C";
+      case "delhi_north_east": return "DL-NE";
+      case "delhi_shahdara": return "DL-SH";
+      case "delhi_east": return "DL-E";
+      default: return id.substring(0, 5).toUpperCase();
+    }
   };
 
   // Precise geographical boundary coordinates of Delhi NCT scaled to 400x400
@@ -484,7 +501,7 @@ export default function DelhiMap({ areas, selectedAreaId, onSelectArea }: DelhiM
                   className="text-[9px] font-mono fill-zinc-200 select-none pointer-events-none font-black uppercase tracking-wider"
                   style={{ textShadow: `0px 0px 4px ${scoreColor}, 1px 1px 2px #000` }}
                 >
-                  {neigh.id.toUpperCase()}
+                  {getDistrictCode(neigh.id)}
                 </text>
               </g>
             );
@@ -497,7 +514,7 @@ export default function DelhiMap({ areas, selectedAreaId, onSelectArea }: DelhiM
           if (!selectedArea) return null;
           const config = neighborhoodData.find((n) => n.id === selectedAreaId);
           return (
-            <div className="absolute bottom-3 left-3 right-3 bg-zinc-950/95 border border-red-950 p-3.5 flex justify-between items-center z-20 backdrop-blur-md shadow-[0_0_20px_rgba(239,68,68,0.1)]">
+            <div className="absolute bottom-2 left-2 right-2 sm:bottom-3 sm:left-3 sm:right-3 bg-zinc-950/95 border border-red-950 p-2.5 sm:p-3.5 flex justify-between items-center z-20 backdrop-blur-md shadow-[0_0_20px_rgba(239,68,68,0.1)]">
               <div>
                 <span className="text-[9px] font-mono text-[#EF4444] font-black uppercase tracking-widest block">
                   SYSTEM BREAKDOWN: {config?.region || "Delhi Block"}
